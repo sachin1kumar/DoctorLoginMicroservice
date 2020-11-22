@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigInteger;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class RegistrationResponse {
+public class LoginResponse {
     private BigInteger doctorId;
+    private String errorMsg;
 
-    public RegistrationResponse() {
+    public LoginResponse() {
     }
 
     public BigInteger getDoctorId() {
@@ -17,5 +18,13 @@ public class RegistrationResponse {
 
     public void setDoctorId(BigInteger doctorId) {
         this.doctorId = doctorId;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
     }
 }

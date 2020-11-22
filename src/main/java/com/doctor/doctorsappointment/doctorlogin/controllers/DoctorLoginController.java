@@ -13,19 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/authorize")
-public class DoctorDetailsController {
+public class DoctorLoginController {
 
     @Autowired
     private DoctorDetailsRepository doctorDetailsRepository;
 
     @RequestMapping(value = "/authorizeDoctor", method = RequestMethod.POST)
     public ResponseEntity<LoginResponse> authenticateDoctor(@RequestBody DoctorDetails doctorDetails) {
-            doctorDetailsRepository.save(doctorDetails);
-            LoginResponse loginResponse = new LoginResponse();
+        String email = doctorDetails.getEmail_id();
+        String password = doctorDetails.getPassword();
+        LoginResponse loginResponse = new LoginResponse();
+        if (doctorDetailsRepository.findByEmail(email) != null
+                && doctorDetailsRepository.findByPassword(password) != null) {
             loginResponse.setDoctorId(doctorDetails.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(loginResponse);
+        } else {
+            loginResponse.setErrorMsg("Un-Authorize user");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
     }
-
-
-
 }
