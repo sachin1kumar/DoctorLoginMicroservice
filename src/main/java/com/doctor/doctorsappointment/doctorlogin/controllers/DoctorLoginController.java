@@ -26,7 +26,6 @@ public class DoctorLoginController {
         List<DoctorDetails> allDoctorDetailsList = doctorDetailsRepository.findAll();
         LoginResponse loginResponse = isDoctorPresent(email, password, allDoctorDetailsList);
         if (loginResponse.getErrorMsg().equalsIgnoreCase("Success")) {
-            //return doctor id present in doctor_details table.
             return ResponseEntity.status(HttpStatus.CREATED).body(loginResponse);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
