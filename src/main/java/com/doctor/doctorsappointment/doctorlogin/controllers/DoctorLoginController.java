@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
 @RequestMapping("/authorize")
@@ -22,14 +23,26 @@ public class DoctorLoginController {
     public ResponseEntity<LoginResponse> authenticateDoctor(@RequestBody DoctorDetails doctorDetails) {
         String email = doctorDetails.getEmail_id();
         String password = doctorDetails.getPassword();
-        LoginResponse loginResponse = new LoginResponse();
-        if (doctorDetailsRepository.findByEmail(email) != null
-                && doctorDetailsRepository.findByPassword(password) != null) {
-            loginResponse.setDoctorId(doctorDetails.getId());
+        List<DoctorDetails> allDoctorDetailsList = doctorDetailsRepository.findAll();
+        LoginResponse loginResponse = isDoctorPresent(email, password, allDoctorDetailsList);
+        if (loginResponse.getErrorMsg().equalsIgnoreCase("Success")) {
+            //return doctor id present in doctor_details table.
             return ResponseEntity.status(HttpStatus.CREATED).body(loginResponse);
-        } else {
-            loginResponse.setErrorMsg("Un-Authorize user");
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
+    }
+
+    private LoginResponse isDoctorPresent(String email, String password, List<DoctorDetails> allDoctorDetailsList) {
+        LoginResponse loginResponse = new LoginResponse();
+        for (DoctorDetails doctorDetails: allDoctorDetailsList) {
+            if (doctorDetails.getEmail_id().equalsIgnoreCase(email) &&
+                doctorDetails.getPassword().equalsIgnoreCase(password)) {
+                loginResponse.setDoctorId(doctorDetails.getId());
+                loginResponse.setErrorMsg("Success");
+                return loginResponse;
+            }
+        }
+        loginResponse.setErrorMsg("No Doctor exists");
+        return loginResponse;
     }
 }

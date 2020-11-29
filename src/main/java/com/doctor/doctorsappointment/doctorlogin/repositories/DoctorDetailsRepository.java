@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Repository
 public interface DoctorDetailsRepository extends JpaRepository<DoctorDetails, BigInteger> {
-    DoctorDetails findByEmail(String email_id);
-    DoctorDetails findByPassword(String password);
+    List<DoctorDetails> findAll();
 }
